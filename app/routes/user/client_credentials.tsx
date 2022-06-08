@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: NASA-1.3
  */
 
-import { useState, useRef } from 'react'
+import { useRef } from 'react'
 import type { ModalRef } from '@trussworks/react-uswds'
 import {
   Alert,
@@ -21,59 +21,71 @@ import {
   Table,
   TextInput,
 } from '@trussworks/react-uswds'
-import type { LoaderFunction, MetaFunction } from '@remix-run/node'
-import { useLoaderData } from '@remix-run/react'
+import type { DataFunctionArgs, MetaFunction } from '@remix-run/node'
+import {
+  Form,
+  useActionData,
+  useLoaderData,
+  useTransition,
+} from '@remix-run/react'
 import { CopyableCode } from '~/components/CopyableCode'
 import { ClientCredentialVendingMachine } from './client_credentials.server'
 import moment from 'moment'
 
-export const loader: LoaderFunction = async function ({ request }) {
+export const meta: MetaFunction = () => ({
+  title: 'GCN - Client Credentials',
+})
+
+export async function loader({ request }: DataFunctionArgs) {
   const machine = await ClientCredentialVendingMachine.create(request)
   const client_credentials = await machine.getClientCredentials()
   const groups = machine.groups
   return { client_credentials, groups }
 }
 
-export const meta: MetaFunction = () => ({
-  title: 'GCN - Client Credentials',
-})
+export async function action({ request }: DataFunctionArgs) {
+  const [formData, machine] = await Promise.all([
+    request.formData(),
+    ClientCredentialVendingMachine.create(request),
+  ])
+  if (formData.get('intent') === 'delete') {
+    await machine.deleteClientCredential(formData.get('client_id') as string)
+    return null
+  } else if (formData.get('intent') === 'create') {
+    return await machine.createClientCredential(
+      formData.get('name') as string | undefined,
+      formData.get('scope') as string | undefined
+    )
+  }
+}
 
-interface ClientCredentialData {
+interface ClientCredentialProps {
   name: string
-  created: number
-  client_id: string
-  client_secret?: string
   scope: string
-}
-
-interface LoaderData {
-  client_credentials: ClientCredentialData[]
-  groups: string[]
-}
-
-interface ClientCredentialProps extends ClientCredentialData {
-  onDelete?: (client_id: string) => void
+  created?: number
+  client_id?: string
+  client_secret?: string
 }
 
 function ClientCredential(props: ClientCredentialProps) {
   const modalRef = useRef<ModalRef>(null)
-
-  const handleDelete: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    modalRef?.current?.toggleModal(e, false)
-    if (props.onDelete !== undefined) {
-      props.onDelete(props.client_id)
-    }
-  }
-
-  const momentCreated = moment.utc(props.created)
+  const momentCreated = props.created && moment.utc(props.created)
 
   return (
     <tr>
       <td>{props.name}</td>
-      <td title={momentCreated.format()}>{momentCreated.fromNow()}</td>
+      {momentCreated ? (
+        <td title={momentCreated.format()}>{momentCreated.fromNow()}</td>
+      ) : (
+        <td>loading</td>
+      )}
       <td>{props.scope}</td>
       <td>
-        <CopyableCode text={props.client_id} />
+        {props.client_id ? (
+          <CopyableCode text={props.client_id} />
+        ) : (
+          <>loading</>
+        )}
       </td>
       <td>
         {props.client_secret ? (
@@ -83,44 +95,53 @@ function ClientCredential(props: ClientCredentialProps) {
         )}
       </td>
       <td>
-        <ModalToggleButton
-          type="button"
-          unstyled
-          title="Delete this client credential"
-          modalRef={modalRef}
-          opener
-        >
-          <big>
-            <IconDelete />
-          </big>
-        </ModalToggleButton>
-
-        <Modal
-          id="modal-delete"
-          ref={modalRef}
-          aria-labelledby="modal-delete-heading"
-          aria-describedby="modal-delete-description"
-          renderToPortal={false} // FIXME: https://github.com/trussworks/react-uswds/pull/1890#issuecomment-1023730448
-        >
-          <ModalHeading id="modal-delete-heading">
-            Delete Client Credential
-          </ModalHeading>
-          <div className="usa-prose">
-            <p id="modal-delete-description">
-              Are you sure that you want to delete the client credential named “
-              {props.name}” with client ID <code>{props.client_id}</code>?
-            </p>
-            <p>This action cannot be undone.</p>
-          </div>
-          <ModalFooter>
-            <Button data-close-modal type="button" onClick={handleDelete}>
-              Delete
-            </Button>
-            <ModalToggleButton modalRef={modalRef} closer outline>
-              Cancel
+        {props.client_id && (
+          <>
+            <ModalToggleButton
+              type="button"
+              unstyled
+              title="Delete this client credential"
+              modalRef={modalRef}
+              opener
+            >
+              <big>
+                <IconDelete />
+              </big>
             </ModalToggleButton>
-          </ModalFooter>
-        </Modal>
+
+            <Modal
+              id="modal-delete"
+              ref={modalRef}
+              aria-labelledby="modal-delete-heading"
+              aria-describedby="modal-delete-description"
+              renderToPortal={false} // FIXME: https://github.com/trussworks/react-uswds/pull/1890#issuecomment-1023730448
+            >
+              <Form method="post">
+                <input type="hidden" name="intent" value="delete" />
+                <input type="hidden" name="client_id" value={props.client_id} />
+                <ModalHeading id="modal-delete-heading">
+                  Delete Client Credential
+                </ModalHeading>
+                <div className="usa-prose">
+                  <p id="modal-delete-description">
+                    Are you sure that you want to delete the client credential
+                    named “{props.name}” with client ID{' '}
+                    <code>{props.client_id}</code>?
+                  </p>
+                  <p>This action cannot be undone.</p>
+                </div>
+                <ModalFooter>
+                  <Button data-close-modal type="submit">
+                    Delete
+                  </Button>
+                  <ModalToggleButton modalRef={modalRef} closer outline>
+                    Cancel
+                  </ModalToggleButton>
+                </ModalFooter>
+              </Form>
+            </Modal>
+          </>
+        )}
       </td>
     </tr>
   )
@@ -128,41 +149,38 @@ function ClientCredential(props: ClientCredentialProps) {
 
 export default function Index() {
   const modalRef = useRef<ModalRef>(null)
-  const { client_credentials, groups } = useLoaderData() as LoaderData
-  const [items, setItems] = useState(client_credentials)
-  const defaultName = ''
-  const [name, setName] = useState(defaultName)
-  const defaultScope = 'gcn.nasa.gov/kafka-public-consumer'
-  const [scope, setScope] = useState(defaultScope)
+  const { client_credentials, groups } =
+    useLoaderData<Awaited<ReturnType<typeof loader>>>()
   client_credentials.sort((a, b) => a.created - b.created)
+  const new_client_credential =
+    useActionData<Awaited<ReturnType<typeof action>>>()
+  const transition = useTransition()
 
-  function handleDelete(client_id: string) {
-    fetch(`/api/client_credentials/${client_id}`, {
-      method: 'delete',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }).then((result) => {
-      if (result.ok) {
-        setItems(items.filter((item) => item.client_id != client_id))
-      } else {
-        console.log(result)
-      }
-    })
+  // Get form submission for pending UI
+  const formData = transition.submission?.formData
+  const pending_client_credential = transition.type === 'actionSubmission' &&
+    formData?.get('intent') === 'create' && {
+      name: formData.get('name') as string,
+      scope: formData.get('scope') as string,
+    }
+  const pending_deleted_client_id =
+    formData?.get('intent') === 'delete' &&
+    (formData.get('client_id') as string)
+
+  let items: ClientCredentialProps[] = client_credentials.filter(
+    (item) =>
+      item.client_id !== new_client_credential?.client_id &&
+      item.client_id !== pending_deleted_client_id
+  )
+  if (
+    new_client_credential &&
+    new_client_credential.client_id !== pending_deleted_client_id
+  ) {
+    items.push(new_client_credential)
   }
 
-  const handleCreate: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    modalRef?.current?.toggleModal(e, false)
-
-    fetch('/api/client_credentials', {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ name, scope }),
-    })
-      .then((result) => result.json())
-      .then((item) => setItems([...items, item]))
+  if (pending_client_credential) {
+    items.push(pending_client_credential)
   }
 
   return (
@@ -193,11 +211,7 @@ export default function Index() {
           </thead>
           <tbody>
             {items.map((item) => (
-              <ClientCredential
-                {...item}
-                key={item.client_id}
-                onDelete={handleDelete}
-              />
+              <ClientCredential {...item} key={item.client_id} />
             ))}
           </tbody>
         </Table>
@@ -210,51 +224,51 @@ export default function Index() {
         aria-describedby="modal-new-description"
         renderToPortal={false} // FIXME: https://github.com/trussworks/react-uswds/pull/1890#issuecomment-1023730448
       >
-        <ModalHeading id="modal-new-heading">
-          Create New Client Credential
-        </ModalHeading>
-        <div className="usa-prose">
-          <p id="modal-new-description">
-            Choose a name for your new client credential.
-          </p>
-          <p className="text-base">
-            The name should help you remember what you use the client credential
-            for, or where you use it. Examples: “My Laptop”, “Lab Desktop”, “GRB
-            Pipeline”.
-          </p>
-        </div>
-        <Label htmlFor="name">Name</Label>
-        <TextInput
-          data-focus
-          name="name"
-          id="name"
-          type="text"
-          placeholder="Name"
-          defaultValue={defaultName}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <Label htmlFor="scope">Scope</Label>
-        <Dropdown
-          id="scope"
-          name="scope"
-          defaultValue={defaultScope}
-          onChange={(e) => setScope(e.target.value)}
-          onBlur={(e) => setScope(e.target.value)}
-        >
-          {groups.map((group) => (
-            <option key={group} value={group}>
-              {group}
-            </option>
-          ))}
-        </Dropdown>
-        <ModalFooter>
-          <Button data-close-modal type="button" onClick={handleCreate}>
-            Create
-          </Button>
-          <ModalToggleButton modalRef={modalRef} closer outline>
-            Cancel
-          </ModalToggleButton>
-        </ModalFooter>
+        <Form method="post">
+          <input type="hidden" name="intent" value="create" />
+          <ModalHeading id="modal-new-heading">
+            Create New Client Credential
+          </ModalHeading>
+          <div className="usa-prose">
+            <p id="modal-new-description">
+              Choose a name for your new client credential.
+            </p>
+            <p className="text-base">
+              The name should help you remember what you use the client
+              credential for, or where you use it. Examples: “My Laptop”, “Lab
+              Desktop”, “GRB Pipeline”.
+            </p>
+          </div>
+          <Label htmlFor="name">Name</Label>
+          <TextInput
+            data-focus
+            name="name"
+            id="name"
+            type="text"
+            placeholder="Name"
+            defaultValue=""
+          />
+          <Label htmlFor="scope">Scope</Label>
+          <Dropdown
+            id="scope"
+            name="scope"
+            defaultValue="gcn.nasa.gov/kafka-public-consumer"
+          >
+            {groups.map((group) => (
+              <option key={group} value={group}>
+                {group}
+              </option>
+            ))}
+          </Dropdown>
+          <ModalFooter>
+            <Button data-close-modal type="submit">
+              Create
+            </Button>
+            <ModalToggleButton modalRef={modalRef} closer outline>
+              Cancel
+            </ModalToggleButton>
+          </ModalFooter>
+        </Form>
       </Modal>
 
       {items.some((item) => item.client_secret) ? (

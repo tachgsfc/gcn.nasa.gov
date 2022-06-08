@@ -95,7 +95,7 @@ export default function App() {
   const location = useLocation()
   const loaderData = useLoaderData<LoaderData>()
   const transition = useTransition()
-  const showProgress = useSpinDelay(transition.state !== 'idle')
+  const showProgress = useSpinDelay(transition.type === 'normalLoad')
 
   return (
     <html lang="en-US">
