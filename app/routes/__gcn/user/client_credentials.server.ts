@@ -14,7 +14,7 @@ import {
 import type { SmithyException } from '@aws-sdk/types'
 import { tables } from '@architect/functions'
 import { generate } from 'generate-password'
-import { getUser } from '~/routes/__auth/user.server'
+import { getUser } from '../__auth/user.server'
 
 const cognitoIdentityProviderClient = new CognitoIdentityProviderClient({})
 

@@ -7,7 +7,7 @@
  */
 
 import type { ActionFunction, LoaderFunction } from '@remix-run/node'
-import { ClientCredentialVendingMachine } from '~/routes/user/client_credentials.server'
+import { ClientCredentialVendingMachine } from '../../user/client_credentials.server'
 
 export const loader: LoaderFunction = async ({ request }) => {
   const machine = await ClientCredentialVendingMachine.create(request)

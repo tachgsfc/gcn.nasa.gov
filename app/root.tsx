@@ -27,22 +27,14 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
-  useLocation,
   useTransition,
 } from '@remix-run/react'
-import type {
-  LoaderFunction,
-  MetaFunction,
-  LinksFunction,
-} from '@remix-run/node'
-import { GovBanner, GridContainer } from '@trussworks/react-uswds'
-import { Footer } from './components/Footer'
-import { Header } from './components/Header'
+import type { LoaderFunction, LinksFunction } from '@remix-run/node'
+import { GovBanner } from '@trussworks/react-uswds'
 import highlightStyle from 'highlight.js/styles/github.css'
 import TopBarProgress from 'react-topbar-progress-indicator'
 import { DevBanner } from './components/DevBanner'
 import { useSpinDelay } from 'spin-delay'
-import { getUser } from './routes/__auth/user.server'
 
 TopBarProgress.config({
   barColors: {
@@ -51,10 +43,6 @@ TopBarProgress.config({
     '1.0': '#0050d8',
   },
 })
-
-export const meta: MetaFunction = () => {
-  return { title: 'GCN - General Coordinates Network' }
-}
 
 export const links: LinksFunction = () => [
   {
@@ -73,26 +61,15 @@ export const links: LinksFunction = () => [
 ]
 
 interface LoaderData {
-  email?: string
   hostname: string
 }
 
 export const loader: LoaderFunction = async function ({ request }) {
   const url = new URL(request.url)
-  const result = { hostname: url.hostname }
-  const user = await getUser(request)
-  if (user) {
-    return {
-      email: user.email,
-      ...result,
-    }
-  } else {
-    return result
-  }
+  return { hostname: url.hostname }
 }
 
 export default function App() {
-  const location = useLocation()
   const loaderData = useLoaderData<LoaderData>()
   const transition = useTransition()
   const showProgress = useSpinDelay(transition.state !== 'idle')
@@ -112,13 +89,7 @@ export default function App() {
         {showProgress && <TopBarProgress />}
         <GovBanner />
         <DevBanner hostname={loaderData.hostname} />
-        <Header pathname={location.pathname} {...loaderData} />
-        <section className="usa-section main-content">
-          <GridContainer>
-            <Outlet />
-          </GridContainer>
-        </section>
-        <Footer />
+        <Outlet />
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

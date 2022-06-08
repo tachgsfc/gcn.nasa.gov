@@ -7,7 +7,7 @@
  */
 
 import type { ActionFunction } from '@remix-run/node'
-import { ClientCredentialVendingMachine } from '~/routes/user/client_credentials.server'
+import { ClientCredentialVendingMachine } from '../../user/client_credentials.server'
 
 export const action: ActionFunction = async ({ params, request }) => {
   if (request.method != 'DELETE') throw new Response(null, { status: 405 })

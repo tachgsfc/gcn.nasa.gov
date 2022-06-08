@@ -23,6 +23,7 @@ import {
   IdentifierMasthead,
   IconHelp,
 } from '@trussworks/react-uswds'
+import { Link } from '@remix-run/react'
 
 function ContactLink({
   children,
@@ -96,17 +97,7 @@ export function Footer() {
           </IdentifierLogo>
         </IdentifierLogos>
         <IdentifierIdentity domain="gcn.nasa.gov">
-          A service of the{' '}
-          <a rel="external" href="https://science.gsfc.nasa.gov/astrophysics/">
-            Astrophysics Science Division
-          </a>{' '}
-          at{' '}
-          <a rel="external" href="https://www.nasa.gov/">
-            NASA
-          </a>{' '}
-          <a rel="external" href="https://www.nasa.gov/goddard">
-            Goddard Space Flight Center
-          </a>
+          A service of the <Link to="/mossaic">MOSSAIC</Link> collaboration
         </IdentifierIdentity>
       </IdentifierMasthead>
       <IdentifierLinks navProps={{ 'aria-label': 'Important links' }}>
