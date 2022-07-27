@@ -24,10 +24,10 @@ import { ClientCredentialVendingMachine } from '../user/client_credentials.serve
 import type { DataFunctionArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
 import moment from 'moment'
-import type { ReactNode } from 'react'
 import { useRef, useState } from 'react'
 import ReCAPTCHA from 'react-google-recaptcha'
 import { getEnvOrDieInProduction } from '~/lib/env'
+import SegmentedCards from '~/components/SegmentedCards'
 
 export async function loader({ request }: DataFunctionArgs) {
   const machine = await ClientCredentialVendingMachine.create(request)
@@ -93,25 +93,6 @@ export async function action({ request }: DataFunctionArgs) {
     default:
       throw new Response('unknown intent', { status: 400 })
   }
-}
-
-function SegmentedCard({ children }: { children: ReactNode[] }) {
-  return (
-    <>
-      {children.map((child, index) => (
-        <div
-          key={index}
-          className={`padding-2 border-base-lighter border-left-2px border-right-2px border-bottom-2px border-solid ${
-            index == 0 ? 'radius-top-md' : ''
-          } ${index == children.length - 1 ? 'radius-bottom-md' : ''} ${
-            index > 0 ? 'border-top-0' : 'border-top-2px'
-          }`}
-        >
-          {child}
-        </div>
-      ))}
-    </>
-  )
 }
 
 export function NewCredentialForm() {
@@ -267,11 +248,11 @@ export default function Credentials() {
             {explanation} Select one of your existing client credentials, or
             create a new one.
           </p>
-          <SegmentedCard>
+          <SegmentedCards>
             {client_credentials.map((credential) => (
               <Credential key={credential.client_id} {...credential} />
             ))}
-          </SegmentedCard>
+          </SegmentedCards>
           <div className="padding-2" key="new">
             <strong>New client credentials....</strong>
             <NewCredentialForm />

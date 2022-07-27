@@ -60,7 +60,7 @@ export default function ClientCredential(props: ClientCredentialProps) {
           </div>
         </Grid>
         <Grid col={10}>
-          <div className="client-cred-card-headline">
+          <div className="segmented-card-headline">
             <h3 className="usa-card__heading margin-right-1">{props.name}</h3>
             <p>
               <small className="text-base-light">

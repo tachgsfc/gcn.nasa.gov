@@ -365,14 +365,14 @@ input.react-tags__search-input:focus {
  * Client credential cards
  */
 
-.client-cred-card-headline h3,
-.client-cred-card-headline p,
-.client-cred-card-headline small {
+.segmented-card-headline h3,
+.segmented-card-headline p,
+.segmented-card-headline small {
   display: inline;
   vertical-align: bottom;
 }
 
-.client-cred-card-headline h3 {
+.segmented-card-headline h3 {
   font-weight: bold;
 }
 
@@ -499,4 +499,12 @@ a {
 
 .overflow-table {
   overflow-x: scroll;
+}
+
+/* 
+  Bottom aligned header rows 
+*/
+.bottom-aligned {
+  display: inline;
+  vertical-align: bottom;
 }
