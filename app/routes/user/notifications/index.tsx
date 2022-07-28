@@ -1,5 +1,6 @@
 import { Link } from '@remix-run/react'
-import { Button, ButtonGroup, Grid } from '@trussworks/react-uswds'
+import { Button, ButtonGroup, Grid, Icon } from '@trussworks/react-uswds'
+import moment from 'moment'
 import SegmentedCards from '~/components/SegmentedCards'
 
 function sendTestEmail(id: number): void {
@@ -38,12 +39,13 @@ export default function Index() {
   ]
   return (
     <>
-      <Grid row>
+      <Grid row className="margin-bottom-2">
         <div className="grid-col flew-fill ">
           <h3 className="bottom-aligned">Existing Notices</h3>
         </div>
         <div className="grid-col flex-auto">
-          <Link className="bottom-aligned" to="edit">
+          <Link className="usa-button" to="edit">
+            <Icon.Add className="bottom-aligned margin-right-05" />
             Add
           </Link>
         </div>
@@ -58,17 +60,17 @@ export default function Index() {
                 </h3>
                 <p>
                   <small className="text-base-light">
-                    Created {alert.createdOn}
+                    Created {moment.utc(alert.createdOn).fromNow()}
                   </small>
                 </p>
               </div>
-              <div>
+              <div className="display-flex">
                 <small>Recipient: {alert.recipient}</small>
               </div>
-              <div>
+              <div className="display-flex">
                 <small>Notice Format: {alert.noticeFormat}</small>
               </div>
-              <div>
+              <div className="display-flex">
                 <small>Notice Types: {alert.noticeTypes.join(', ')}</small>
               </div>
             </div>
@@ -79,15 +81,18 @@ export default function Index() {
                   onClick={() => sendTestEmail(alert.id)}
                   outline
                 >
+                  <Icon.MailOutline className="bottom-aligned margin-right-05" />
                   Test Message
                 </Button>
                 <Link
                   to={`edit?id=${alert.id}`}
                   className="usa-button usa-button--outline"
                 >
+                  <Icon.Edit className="bottom-aligned margin-right-05" />
                   Edit
                 </Link>
                 <Button type="button" secondary>
+                  <Icon.Delete className="bottom-aligned margin-right-05" />
                   Delete
                 </Button>
               </ButtonGroup>

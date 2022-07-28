@@ -20,10 +20,13 @@ export default function User() {
                 Account Info
               </NavLink>,
               <NavLink key="credentials" to="credentials">
-                Credentials
+                Client Credentials
               </NavLink>,
               <NavLink key="notifications" to="notifications">
                 Email Notifications
+              </NavLink>,
+              <NavLink key="logout" to="/logout">
+                Sign Out
               </NavLink>,
             ]}
           />

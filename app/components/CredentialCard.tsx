@@ -8,6 +8,7 @@
 
 import { useFetcher, Form } from '@remix-run/react'
 import type { ModalRef } from '@trussworks/react-uswds'
+import { Icon } from '@trussworks/react-uswds'
 import {
   Grid,
   ModalToggleButton,
@@ -53,6 +54,7 @@ export default function CredentialCard({
             type="button"
             className="usa-button--secondary"
           >
+            <Icon.Delete className="bottom-aligned margin-right-05" />
             Delete
           </ModalToggleButton>
           <Form method="get" action="../alerts" className="display-inline">

@@ -2,7 +2,7 @@ import type { DataFunctionArgs } from '@remix-run/node'
 import { Link, useLoaderData } from '@remix-run/react'
 import SegmentedCards from '~/components/SegmentedCards'
 import { ClientCredentialVendingMachine } from '../client_credentials.server'
-import { Grid } from '@trussworks/react-uswds'
+import { Grid, Icon } from '@trussworks/react-uswds'
 import CredentialCard from '~/components/CredentialCard'
 
 export async function loader({ request }: DataFunctionArgs) {
@@ -47,12 +47,13 @@ export default function Index() {
 
   return (
     <>
-      <Grid row>
+      <Grid row className="margin-bottom-2">
         <div className="grid-col flew-fill ">
           <h3 className="bottom-aligned">Existing Credentials</h3>
         </div>
         <div className="grid-col flex-auto">
-          <Link className="bottom-aligned" to="edit">
+          <Link className="usa-button" to="edit">
+            <Icon.Add className="bottom-aligned margin-right-05" />
             Add
           </Link>
         </div>
