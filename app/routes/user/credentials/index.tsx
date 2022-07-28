@@ -48,7 +48,7 @@ export default function Index() {
   return (
     <>
       <Grid row className="margin-bottom-2">
-        <div className="grid-col flew-fill ">
+        <div className="grid-col flex-fill ">
           <h3 className="bottom-aligned">Existing Credentials</h3>
         </div>
         <div className="grid-col flex-auto">

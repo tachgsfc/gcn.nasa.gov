@@ -33,7 +33,7 @@ export default function CredentialCard({
   return (
     <>
       <Grid row style={disabled ? { opacity: '50%' } : undefined}>
-        <div className="grid-col flex-fill">
+        <div className="tablet:grid-col flex-fill">
           <div>
             <strong>{name}</strong>{' '}
             <small className="text-base">
@@ -46,7 +46,7 @@ export default function CredentialCard({
             </small>
           </div>
         </div>
-        <div className="grid-col flex-auto">
+        <div className="tablet:grid-col flex-auto">
           <ModalToggleButton
             opener
             disabled={disabled}

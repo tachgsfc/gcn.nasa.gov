@@ -1,5 +1,11 @@
 import { Link } from '@remix-run/react'
-import { Button, ButtonGroup, Grid, Icon } from '@trussworks/react-uswds'
+import {
+  Button,
+  ButtonGroup,
+  Grid,
+  Icon,
+  Tooltip,
+} from '@trussworks/react-uswds'
 import moment from 'moment'
 import SegmentedCards from '~/components/SegmentedCards'
 
@@ -40,7 +46,7 @@ export default function Index() {
   return (
     <>
       <Grid row className="margin-bottom-2">
-        <div className="grid-col flew-fill ">
+        <div className="grid-col flex-fill ">
           <h3 className="bottom-aligned">Existing Notices</h3>
         </div>
         <div className="grid-col flex-auto">
@@ -53,7 +59,7 @@ export default function Index() {
       <SegmentedCards>
         {data.map((alert) => (
           <Grid key={alert.id} row>
-            <div className="grid-col flex-fill">
+            <div className="tablet:grid-col flex-fill">
               <div className="segmented-card-headline">
                 <h3 className="usa-card__heading margin-right-1">
                   {alert.name}
@@ -61,6 +67,23 @@ export default function Index() {
                 <p>
                   <small className="text-base-light">
                     Created {moment.utc(alert.createdOn).fromNow()}
+                    {alert.active ? (
+                      <Tooltip
+                        position="top"
+                        label="Active"
+                        className="usa-button--unstyled"
+                      >
+                        <Icon.CheckCircleOutline className="text-green" />
+                      </Tooltip>
+                    ) : (
+                      <Tooltip
+                        position="top"
+                        label="Inactive"
+                        className="usa-button--unstyled"
+                      >
+                        <Icon.DoNotDisturb className="text-base" />
+                      </Tooltip>
+                    )}
                   </small>
                 </p>
               </div>
@@ -74,7 +97,7 @@ export default function Index() {
                 <small>Notice Types: {alert.noticeTypes.join(', ')}</small>
               </div>
             </div>
-            <div className="grid-col flex-auto">
+            <div className="tablet:grid-col flex-auto">
               <ButtonGroup>
                 <Button
                   type="button"
