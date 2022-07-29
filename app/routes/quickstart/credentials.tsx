@@ -9,8 +9,7 @@
 import { useLoaderData } from '@remix-run/react'
 import { ClientCredentialVendingMachine } from '../user/client_credentials.server'
 import type { DataFunctionArgs } from '@remix-run/node'
-import { redirect } from '@remix-run/node'
-import { getEnvOrDieInProduction } from '~/lib/env'
+import { getEnvOrDieInProduction, handleCredentialActions } from '~/lib/env'
 import SegmentedCards from '~/components/SegmentedCards'
 import { NewCredentialForm } from '~/components/NewCredentialForm'
 import CredentialCard from '~/components/CredentialCard'
@@ -23,62 +22,8 @@ export async function loader({ request }: DataFunctionArgs) {
   return { client_credentials, recaptchaSiteKey, groups }
 }
 
-async function verifyRecaptcha(response?: string) {
-  const secret = getEnvOrDieInProduction('RECAPTCHA_SITE_SECRET')
-  if (!secret) return
-
-  const params = new URLSearchParams()
-  if (response) {
-    params.set('response', response)
-  }
-  params.set('secret', secret)
-  const verifyResponse = await fetch(
-    'https://www.google.com/recaptcha/api/siteverify',
-    { method: 'POST', body: params }
-  )
-  const { success } = await verifyResponse.json()
-  if (!success) throw new Response('ReCAPTCHA was invalid', { status: 400 })
-}
-
-function getFormDataString(formData: FormData, key: string) {
-  const value = formData.get(key)
-  if (typeof value === 'string') {
-    return value
-  } else if (value === null) {
-    return undefined
-  } else {
-    throw new Response(`expected ${key} to be a string`, { status: 400 })
-  }
-}
-
 export async function action({ request }: DataFunctionArgs) {
-  const [data, machine] = await Promise.all([
-    request.formData(),
-    ClientCredentialVendingMachine.create(request),
-  ])
-
-  switch (getFormDataString(data, 'intent')) {
-    case 'create':
-      const name = getFormDataString(data, 'name')
-      const scope = getFormDataString(data, 'scope')
-      const recaptchaResponse = getFormDataString(data, 'g-recaptcha-response')
-      await verifyRecaptcha(recaptchaResponse)
-      const { client_id } = await machine.createClientCredential(name, scope)
-      return redirect(
-        `/quickstart/alerts?clientId=${encodeURIComponent(client_id)}`
-      )
-
-    case 'delete':
-      const clientId = getFormDataString(data, 'clientId')
-      if (!clientId) {
-        throw new Response('clientId not present', { status: 400 })
-      }
-      await machine.deleteClientCredential(clientId)
-      return null
-
-    default:
-      throw new Response('unknown intent', { status: 400 })
-  }
+  return handleCredentialActions(request, "quickstart" )
 }
 
 export default function Credentials() {

@@ -1,3 +1,11 @@
+/*!
+ * Copyright © 2022 United States Government as represented by the Administrator
+ * of the National Aeronautics and Space Administration. No copyright is claimed
+ * in the United States under Title 17, U.S. Code. All Other Rights Reserved.
+ *
+ * SPDX-License-Identifier: NASA-1.3
+ */
+
 import type { DataFunctionArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
 import { Form, Link, useLoaderData } from '@remix-run/react'
@@ -8,6 +16,7 @@ import {
   Label,
   TextInput,
 } from '@trussworks/react-uswds'
+import { useState } from 'react'
 import { NoticeFormat } from '~/components/NoticeFormat'
 import { NoticeTypeCheckboxes } from '~/components/NoticeTypeCheckboxes'
 
@@ -61,6 +70,9 @@ export async function loader({ request }: DataFunctionArgs) {
 
 export default function Edit() {
   const { id, intent, active } = useLoaderData<typeof loader>()
+  const [nameValid, setNameValid] = useState(false)
+  const [recipientValid, setrecipientValid] = useState(false)
+
 
   return (
     <Form method="post">
@@ -79,10 +91,34 @@ export default function Edit() {
       ) : (
         <input type="hidden" name="active" value={'on'} defaultChecked />
       )}
-      <Label htmlFor="name">Name</Label>
-      <TextInput id="name" name="name" type="text" inputSize="small" />
-      <Label htmlFor="recipient">Recipient</Label>
-      <TextInput id="recipient" name="recipient" type="email" />
+      <Label htmlFor="name">
+        Name
+        <abbr title="required" className="usa-label--required">*</abbr>
+      </Label>
+      <TextInput 
+        id="name" 
+        name="name" 
+        type="text" 
+        inputSize="small"  
+        autoCapitalize="off"
+        autoCorrect="off"
+        required={true}
+        onChange={(e) => setNameValid(!!e.target.value)}
+        />
+      <Label htmlFor="recipient">
+        Recipient
+        <abbr title="required" className="usa-label--required">*</abbr>
+      </Label>
+      <TextInput 
+        id="recipient" 
+        name="recipient" 
+        type="email"
+        autoCapitalize="off"
+        autoCorrect="off"
+        required={true}
+        placeholder="email"
+        onChange={(e) => setrecipientValid(!!e.target.value)}
+        />
       <Label htmlFor="format">Format</Label>
       <NoticeFormat name="noticeFormat" value="text" />
       <Label htmlFor="noticeTypes">Types</Label>
@@ -91,7 +127,7 @@ export default function Edit() {
         <Link to=".." type="button" className="usa-button usa-button--outline">
           Cancel
         </Link>
-        <Button type="submit">Save</Button>
+        <Button disabled={!(nameValid && recipientValid)} type="submit">Save</Button>
       </ButtonGroup>
     </Form>
   )

@@ -6,13 +6,12 @@
  * SPDX-License-Identifier: NASA-1.3
  */
 
-import { Outlet } from '@remix-run/react'
+import moment from 'moment'
 
-export default function Notifications() {
-  return (
-    <>
-      <h1>Email Notifications</h1>
-      <Outlet />
-    </>
-  )
+export default function TimeAgo({time}:{time:number}){
+ return (
+  <>
+    {moment.utc(time).fromNow()}
+  </>
+ )
 }

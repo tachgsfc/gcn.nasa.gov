@@ -1,3 +1,11 @@
+/*!
+ * Copyright © 2022 United States Government as represented by the Administrator
+ * of the National Aeronautics and Space Administration. No copyright is claimed
+ * in the United States under Title 17, U.S. Code. All Other Rights Reserved.
+ *
+ * SPDX-License-Identifier: NASA-1.3
+ */
+
 import { Link } from '@remix-run/react'
 import {
   Button,
@@ -8,6 +16,7 @@ import {
 } from '@trussworks/react-uswds'
 import moment from 'moment'
 import SegmentedCards from '~/components/SegmentedCards'
+import TimeAgo from '~/components/TimeAgo'
 
 function sendTestEmail(id: number): void {
   console.log(id)
@@ -66,7 +75,7 @@ export default function Index() {
                 </h3>
                 <p>
                   <small className="text-base-light">
-                    Created {moment.utc(alert.createdOn).fromNow()}
+                    Created <TimeAgo time={alert.createdOn}></TimeAgo>
                     {alert.active ? (
                       <Tooltip
                         position="top"
