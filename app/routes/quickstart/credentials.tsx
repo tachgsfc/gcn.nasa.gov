@@ -9,9 +9,12 @@
 import { useLoaderData } from '@remix-run/react'
 import { ClientCredentialVendingMachine } from '../user/client_credentials.server'
 import type { DataFunctionArgs } from '@remix-run/node'
-import { getEnvOrDieInProduction, handleCredentialActions } from '~/lib/env'
+import { getEnvOrDieInProduction } from '~/lib/env'
 import SegmentedCards from '~/components/SegmentedCards'
-import { NewCredentialForm } from '~/components/NewCredentialForm'
+import {
+  handleCredentialActions,
+  NewCredentialForm,
+} from '~/components/NewCredentialForm'
 import CredentialCard from '~/components/CredentialCard'
 
 export async function loader({ request }: DataFunctionArgs) {
@@ -23,7 +26,7 @@ export async function loader({ request }: DataFunctionArgs) {
 }
 
 export async function action({ request }: DataFunctionArgs) {
-  return handleCredentialActions(request, "quickstart" )
+  return handleCredentialActions(request, 'quickstart')
 }
 
 export default function Credentials() {

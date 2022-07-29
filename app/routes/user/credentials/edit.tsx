@@ -7,8 +7,11 @@
  */
 
 import type { DataFunctionArgs } from '@remix-run/node'
-import { NewCredentialForm } from '~/components/NewCredentialForm'
-import { getEnvOrDieInProduction, handleCredentialActions } from '~/lib/env'
+import {
+  handleCredentialActions,
+  NewCredentialForm,
+} from '~/components/NewCredentialForm'
+import { getEnvOrDieInProduction } from '~/lib/env'
 import { ClientCredentialVendingMachine } from '../client_credentials.server'
 
 export async function loader({ request }: DataFunctionArgs) {
@@ -20,7 +23,7 @@ export async function loader({ request }: DataFunctionArgs) {
 }
 
 export async function action({ request }: DataFunctionArgs) {
-  return handleCredentialActions(request, "user")
+  return handleCredentialActions(request, 'user')
 }
 
 export default function Edit() {
