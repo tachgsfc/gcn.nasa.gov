@@ -14,7 +14,6 @@ import {
   Icon,
   Tooltip,
 } from '@trussworks/react-uswds'
-import moment from 'moment'
 import SegmentedCards from '~/components/SegmentedCards'
 import TimeAgo from '~/components/TimeAgo'
 
