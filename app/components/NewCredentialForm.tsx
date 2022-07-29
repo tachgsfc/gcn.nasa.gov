@@ -21,6 +21,7 @@ export async function loader({ request }: DataFunctionArgs) {
   const recaptchaSiteKey = getEnvOrDieInProduction('RECAPTCHA_SITE_KEY')
   return { client_credentials, recaptchaSiteKey, groups }
 }
+
 export function NewCredentialForm() {
   const { groups, recaptchaSiteKey } = useLoaderData<typeof loader>()
   const [recaptchaValid, setRecaptchaValid] = useState(!recaptchaSiteKey)
