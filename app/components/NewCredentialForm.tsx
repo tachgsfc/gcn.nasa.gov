@@ -15,12 +15,8 @@ import ReCAPTCHA from 'react-google-recaptcha'
 import { getEnvOrDieInProduction } from '~/lib/env'
 import { ClientCredentialVendingMachine } from '~/routes/user/client_credentials.server'
 
-export async function loader({ request }: DataFunctionArgs) {
-  const machine = await ClientCredentialVendingMachine.create(request)
-  const client_credentials = await machine.getClientCredentials()
-  const groups = machine.groups
-  const recaptchaSiteKey = getEnvOrDieInProduction('RECAPTCHA_SITE_KEY')
-  return { client_credentials, recaptchaSiteKey, groups }
+export async function loader(args: DataFunctionArgs) {
+  return await handleCredentialLoader(args)
 }
 
 export function getFormDataString(formData: FormData, key: string) {
@@ -89,6 +85,14 @@ export async function handleCredentialActions(
     default:
       throw new Response('unknown intent', { status: 400 })
   }
+}
+
+export async function handleCredentialLoader({ request }: DataFunctionArgs) {
+  const machine = await ClientCredentialVendingMachine.create(request)
+  const client_credentials = await machine.getClientCredentials()
+  const groups = machine.groups
+  const recaptchaSiteKey = getEnvOrDieInProduction('RECAPTCHA_SITE_KEY')
+  return { client_credentials, recaptchaSiteKey, groups }
 }
 
 export function NewCredentialForm() {

@@ -49,7 +49,7 @@ let Tabs: React.FC<TabsContainerProps> = ({ tabs = [] }) => {
         aria-labelledby={`btn-${selectedTab}`}
         id={`tabpanel-${selectedTab}`}
       >
-        {Panel ? Panel.Component : null}
+        {Panel && Panel.Component}
       </div>
     </div>
   )

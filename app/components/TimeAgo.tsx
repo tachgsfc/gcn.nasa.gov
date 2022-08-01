@@ -8,10 +8,6 @@
 
 import moment from 'moment'
 
-export default function TimeAgo({time}:{time:number}){
- return (
-  <>
-    {moment.utc(time).fromNow()}
-  </>
- )
+export default function TimeAgo({ time }: { time: number }) {
+  return <>{moment.utc(time).fromNow()}</>
 }
