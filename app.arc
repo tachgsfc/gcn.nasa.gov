@@ -30,3 +30,6 @@ lambdaCognitoPermissions  # Grant the Lambda function access to Cognito to run t
 lambdaMayNotWriteToStaticBucket  # the Lambda function should not be able to modify the static bucket
 manualStaticBucketPolicy  # Mission Cloud Platform requires bucket policies to be set manually
 permissionsBoundary  # configure IAM Role permissions boundaries required by Mission Cloud Platform
+
+@plugins
+oidcProvider

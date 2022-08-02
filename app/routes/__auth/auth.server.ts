@@ -50,13 +50,7 @@ export const storage = createArcTableSessionStorage({
 
 export const getOpenIDClient = memoizee(
   async function () {
-    const user_pool_id = getEnvOrDie('COGNITO_USER_POOL_ID')
-
-    const providerUrl = `https://cognito-idp.${
-      user_pool_id.split('_')[0]
-    }.amazonaws.com/${user_pool_id}/`
-
-    const issuer = await Issuer.discover(providerUrl)
+    const issuer = await Issuer.discover(getEnvOrDie('OIDC_PROVIDER'))
 
     return new issuer.Client({
       client_id: getEnvOrDie('OIDC_CLIENT_ID'),
