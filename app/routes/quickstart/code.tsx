@@ -12,6 +12,7 @@ import { Form, useLoaderData } from '@remix-run/react'
 import type { DataFunctionArgs } from '@remix-run/node'
 import { ClientCredentialVendingMachine } from '../user/client_credentials.server'
 import { Button } from '@trussworks/react-uswds'
+import { mapFormatAndNoticeTypeToTopics } from '~/lib/utils'
 
 export async function loader({ request }: DataFunctionArgs) {
   const { clientId, noticeFormat, ...rest } = Object.fromEntries(
@@ -35,9 +36,10 @@ export default function Code() {
     noticeTypes,
   } = useLoaderData<typeof loader>()
 
-  const topics = noticeTypes.map(
-    (noticeType) => `gcn.classic.${noticeFormat}.${noticeType}`
+  const topics = noticeTypes.map((noticeType) =>
+    mapFormatAndNoticeTypeToTopics(noticeFormat, noticeType)
   )
+
   const listTopics = false
 
   const tabs = [
