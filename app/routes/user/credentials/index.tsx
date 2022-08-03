@@ -10,7 +10,7 @@ import type { DataFunctionArgs } from '@remix-run/node'
 import { Link, useLoaderData } from '@remix-run/react'
 import SegmentedCards from '~/components/SegmentedCards'
 import { ClientCredentialVendingMachine } from '../client_credentials.server'
-import { Grid, Icon } from '@trussworks/react-uswds'
+import { Icon } from '@trussworks/react-uswds'
 import CredentialCard from '~/components/CredentialCard'
 
 export async function loader({ request }: DataFunctionArgs) {
@@ -55,17 +55,15 @@ export default function Index() {
 
   return (
     <>
-      <Grid row className="margin-bottom-2">
-        <div className="grid-col flex-fill ">
-          <h3 className="bottom-aligned">Existing Credentials</h3>
-        </div>
-        <div className="grid-col flex-auto">
-          <Link className="usa-button" to="edit">
-            <Icon.Add className="bottom-aligned margin-right-05" />
-            Add
-          </Link>
-        </div>
-      </Grid>
+      <div className="tablet:grid-col-2 flex-auto flex-align-self-center display-flex">
+        <Link
+          className="usa-button margin-left-auto margin-right-0 flex-auto"
+          to="edit"
+        >
+          <Icon.Add className="bottom-aligned margin-right-05" />
+          Add
+        </Link>
+      </div>
       <SegmentedCards>
         {client_credentials.map((credential) => (
           <CredentialCard key={credential.client_id} {...credential} />

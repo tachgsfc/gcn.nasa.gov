@@ -7,12 +7,15 @@
  */
 
 import { Outlet } from '@remix-run/react'
+import { Grid } from '@trussworks/react-uswds'
 
 export default function Notifications() {
   return (
-    <>
-      <h1>Email Notifications</h1>
+    <Grid row>
+      <div className="tablet:grid-col-10 flex-fill usa-prose">
+        <h1 className="margin-y-0">Email Notifications</h1>
+      </div>
       <Outlet />
-    </>
+    </Grid>
   )
 }

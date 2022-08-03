@@ -7,13 +7,7 @@
  */
 
 import { Link } from '@remix-run/react'
-import {
-  Button,
-  ButtonGroup,
-  Grid,
-  Icon,
-  Tooltip,
-} from '@trussworks/react-uswds'
+import { Button, ButtonGroup, Grid, Icon } from '@trussworks/react-uswds'
 import SegmentedCards from '~/components/SegmentedCards'
 import TimeAgo from '~/components/TimeAgo'
 
@@ -53,17 +47,15 @@ export default function Index() {
   ]
   return (
     <>
-      <Grid row className="margin-bottom-2">
-        <div className="grid-col flex-fill ">
-          <h3 className="bottom-aligned">Existing Notices</h3>
-        </div>
-        <div className="grid-col flex-auto">
-          <Link className="usa-button" to="edit">
-            <Icon.Add className="bottom-aligned margin-right-05" />
-            Add
-          </Link>
-        </div>
-      </Grid>
+      <div className="tablet:grid-col-2 flex-auto flex-align-self-center display-flex">
+        <Link
+          className="usa-button margin-left-auto margin-right-0 flex-auto"
+          to="edit"
+        >
+          <Icon.Add className="bottom-aligned margin-right-05" />
+          Add
+        </Link>
+      </div>
       <SegmentedCards>
         {data.map((alert) => (
           <Grid key={alert.id} row>
@@ -75,23 +67,6 @@ export default function Index() {
                 <p>
                   <small className="text-base-light">
                     Created <TimeAgo time={alert.createdOn}></TimeAgo>
-                    {alert.active ? (
-                      <Tooltip
-                        position="top"
-                        label="Active"
-                        className="usa-button--unstyled"
-                      >
-                        <Icon.CheckCircleOutline className="text-green" />
-                      </Tooltip>
-                    ) : (
-                      <Tooltip
-                        position="top"
-                        label="Inactive"
-                        className="usa-button--unstyled"
-                      >
-                        <Icon.DoNotDisturb className="text-base" />
-                      </Tooltip>
-                    )}
                   </small>
                 </p>
               </div>

@@ -508,3 +508,16 @@ a {
   display: inline;
   vertical-align: bottom;
 }
+
+/*
+  Fully span the row width for segmented columns
+*/
+.full-width-span {
+  flex: 1 1 100%;
+}
+/*
+  Generic display flex for when necessary
+*/
+.display-flex {
+  display: flex;
+}

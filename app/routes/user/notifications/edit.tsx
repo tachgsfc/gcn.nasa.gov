@@ -73,62 +73,73 @@ export default function Edit() {
   const [nameValid, setNameValid] = useState(false)
   const [recipientValid, setrecipientValid] = useState(false)
 
-
   return (
-    <Form method="post">
-      <input type="hidden" name="id" value={id} />
-      <input type="hidden" name="intent" value={intent} />
-      {intent == 'update' ? (
-        <>
-          <Label htmlFor="active">Status</Label>
-          <Checkbox
-            id="active"
-            name="active"
-            label={'Set Active'}
-            defaultChecked={active}
-          />
-        </>
-      ) : (
-        <input type="hidden" name="active" value={'on'} defaultChecked />
-      )}
-      <Label htmlFor="name">
-        Name
-        <abbr title="required" className="usa-label--required">*</abbr>
-      </Label>
-      <TextInput 
-        id="name" 
-        name="name" 
-        type="text" 
-        inputSize="small"  
-        autoCapitalize="off"
-        autoCorrect="off"
-        required={true}
-        onChange={(e) => setNameValid(!!e.target.value)}
+    <div className="tablet:grid-col-12">
+      <Form method="post">
+        <input type="hidden" name="id" value={id} />
+        <input type="hidden" name="intent" value={intent} />
+        {intent == 'update' ? (
+          <>
+            <Label htmlFor="active">Status</Label>
+            <Checkbox
+              id="active"
+              name="active"
+              label={'Set Active'}
+              defaultChecked={active}
+            />
+          </>
+        ) : (
+          <input type="hidden" name="active" value={'on'} defaultChecked />
+        )}
+        <Label htmlFor="name">
+          Name
+          <abbr title="required" className="usa-label--required">
+            *
+          </abbr>
+        </Label>
+        <TextInput
+          id="name"
+          name="name"
+          type="text"
+          inputSize="small"
+          autoCapitalize="off"
+          autoCorrect="off"
+          required={true}
+          onChange={(e) => setNameValid(!!e.target.value)}
         />
-      <Label htmlFor="recipient">
-        Recipient
-        <abbr title="required" className="usa-label--required">*</abbr>
-      </Label>
-      <TextInput 
-        id="recipient" 
-        name="recipient" 
-        type="email"
-        autoCapitalize="off"
-        autoCorrect="off"
-        required={true}
-        placeholder="email"
-        onChange={(e) => setrecipientValid(!!e.target.value)}
+        <Label htmlFor="recipient">
+          Recipient
+          <abbr title="required" className="usa-label--required">
+            *
+          </abbr>
+        </Label>
+        <TextInput
+          id="recipient"
+          name="recipient"
+          type="email"
+          autoCapitalize="off"
+          autoCorrect="off"
+          required={true}
+          placeholder="email"
+          onChange={(e) => setrecipientValid(!!e.target.value)}
         />
-      <Label htmlFor="format">Format</Label>
-      <NoticeFormat name="noticeFormat" value="text" />
-      <Label htmlFor="noticeTypes">Types</Label>
-      <NoticeTypeCheckboxes></NoticeTypeCheckboxes>
-      <ButtonGroup>
-        <Link to=".." type="button" className="usa-button usa-button--outline">
-          Cancel
-        </Link>
-        <Button disabled={!(nameValid && recipientValid)} type="submit">Save</Button>
-      </ButtonGroup>
-    </Form>
+        <Label htmlFor="format">Format</Label>
+        <NoticeFormat name="noticeFormat" value="text" />
+        <Label htmlFor="noticeTypes">Types</Label>
+        <NoticeTypeCheckboxes></NoticeTypeCheckboxes>
+        <ButtonGroup>
+          <Link
+            to=".."
+            type="button"
+            className="usa-button usa-button--outline"
+          >
+            Cancel
+          </Link>
+          <Button disabled={!(nameValid && recipientValid)} type="submit">
+            Save
+          </Button>
+        </ButtonGroup>
+      </Form>
+    </div>
   )
 }
