@@ -6,16 +6,8 @@
  * SPDX-License-Identifier: NASA-1.3
  */
 
-import { Outlet } from '@remix-run/react'
-import { Grid } from '@trussworks/react-uswds'
+import UserPageContainer from '~/components/UserPageContainer'
 
 export default function Credentials() {
-  return (
-    <Grid row>
-      <div className="tablet:grid-col-10 flex-fill usa-prose">
-        <h1 className="margin-y-0">Client Credentials</h1>
-      </div>
-      <Outlet />
-    </Grid>
-  )
+  return <UserPageContainer header="Client Credentials" />
 }
