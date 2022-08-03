@@ -86,6 +86,7 @@ export async function handleCredentialActions(
       throw new Response('unknown intent', { status: 400 })
   }
 }
+
 export async function handleCredentialLoader({ request }: DataFunctionArgs) {
   const machine = await ClientCredentialVendingMachine.create(request)
   const client_credentials = await machine.getClientCredentials()

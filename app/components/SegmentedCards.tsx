@@ -18,8 +18,8 @@ export default function SegmentedCards({
       {children.map((child, index) => (
         <div
           key={index}
-          className={`padding-2 border-base-lighter border-left-2px border-right-2px border-bottom-2px border-solid ${
-            index == 0 ? 'radius-top-md' : ''
+          className={`padding-2 border-base-lighter border-left-2px border-right-2px border-bottom-2px border-solid full-width-span ${
+            index == 0 ? 'radius-top-md margin-top-1' : ''
           } ${index == children.length - 1 ? 'radius-bottom-md' : ''} ${
             index > 0 ? 'border-top-0' : 'border-top-2px'
           }`}
